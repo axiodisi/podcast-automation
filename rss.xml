@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss version="2.0">
+  <channel>
+    <title>Your Podcast Title</title>
+    <link>http://www.yourwebsite.com</link>
+    <description>Your podcast description goes here.</description>
+    <language>en-us</language>
+
+    
+
+  <item><title>test</title><description>test 5345</description><enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241016_084844.mp3" length="12345678" type="audio/mpeg" /><pubDate>Wed, 16 Oct 2024 15:24:47 GMT</pubDate><guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241016_084844.mp3</guid></item><item><title>test</title><description>test 5345</description><enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241015_104830.mp3" length="12345678" type="audio/mpeg" /><pubDate>Wed, 16 Oct 2024 15:25:21 GMT</pubDate><guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241015_104830.mp3</guid></item></channel>
+</rss>

@@ -6,12 +6,10 @@
     <description>Your podcast description goes here.</description>
     <language>en-us</language>
     <itunes:email>rocco.colasaccojr@gmail.com</itunes:email>
-    
-    <!-- Ensure the iTunes category tag is present -->
-    <itunes:category text="Technology"> <!-- Adjust the category as needed -->
+    <itunes:category text="Technology">
       <itunes:category text="Podcasting" />
     </itunes:category>
-
+    
     <item>
       <title>test2</title>
       <description>test 5345</description>

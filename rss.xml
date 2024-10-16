@@ -5,11 +5,16 @@
     <link>https://axiodisi.github.io/podcast-automation/rss.xml</link>
     <description>Goodl</description>
     <language>en-us</language>
-    <itunes:email>rocco.colasaccojr@gmail.com</itunes:email>
+    <itunes:author>radioai</itunes:author>
+    <itunes:owner>
+      <itunes:name>radioai</itunes:name>
+      <itunes:email>rocco.colasaccojr@gmail.com</itunes:email>
+    </itunes:owner>
+    <itunes:explicit>no</itunes:explicit>
     <itunes:category text="Technology">
       <itunes:category text="Podcasting" />
     </itunes:category>
-<itunes:image href="https://storage.googleapis.com/audio-upload-queue/cover.png" />
+    <itunes:image href="https://storage.googleapis.com/audio-upload-queue/cover.png" />
     <item>
       <title>test2</title>
       <description>test 5345</description>

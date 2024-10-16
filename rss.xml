@@ -9,7 +9,7 @@
     <itunes:category text="Technology">
       <itunes:category text="Podcasting" />
     </itunes:category>
-    <itunes:image href="https://storage.googleapis.com/audio-upload-queue/cover.png" /> <!-- Updated URL -->
+    <itunes:image href="https://storage.googleapis.com/audio-upload-queue/cover.png"> </itunes:image> <!-- Updated URL -->
     <item>
       <title>test2</title>
       <description>test 5345</description>

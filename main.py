@@ -14,7 +14,7 @@ from google.oauth2.credentials import Credentials
 # Replace with your Google Cloud bucket name
 BUCKET_NAME = 'audio-upload-queue'
 # Replace with the path to your RSS feed file
-RSS_FEED_FILE = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\rss\rss.xml'
+RSS_FEED_FILE = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation\rss.xml'
 # Replace with your audio directory
 AUDIO_DIRECTORY = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\output'
 # Replace with your archive directory

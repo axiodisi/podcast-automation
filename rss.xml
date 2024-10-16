@@ -9,8 +9,7 @@
     <itunes:category text="Technology">
       <itunes:category text="Podcasting" />
     </itunes:category>
-    <!-- Add your cover art URL here -->
-    <itunes:image href="https://storage.cloud.google.com/audio-upload-queue/cover.png" />
+    <itunes:image href="https://storage.googleapis.com/audio-upload-queue/cover.png" /> <!-- Updated URL -->
     <item>
       <title>test2</title>
       <description>test 5345</description>
@@ -18,6 +17,5 @@
       <pubDate>Wed, 16 Oct 2024 15:36:34 GMT</pubDate>
       <guid isPermaLink="false">http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241015_114235d.mp3</guid>
     </item>
-    
   </channel>
 </rss>

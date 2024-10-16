@@ -1,71 +1,184 @@
+import os
+import time
+import xml.etree.ElementTree as ET
+import datetime
+import gspread
+from google.cloud import storage
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-import gspread
-import os
 
-# Scopes for Google Sheets and Drive
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
-          'https://www.googleapis.com/auth/drive.file']
+# Google Cloud Storage and RSS feed settings
+# Replace with your Google Cloud bucket name
+BUCKET_NAME = 'audio-upload-queue'
+# Replace with the path to your RSS feed file
+RSS_FEED_FILE = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\rss\rss.xml'
+# Replace with the directory where your audio files are stored
+AUDIO_DIRECTORY = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\output'
+# Replace with your Google Sheet ID
+SHEET_ID = '19R0p9Ps-4A3_9eU_dy5ZiGyF_FwLyued9TsZpYkZVpg'
+WORKSHEET_NAME = 'Sheet1'  # Replace with your worksheet name
 
-# File to store tokens
-TOKEN_FILE = 'token.json'
+# Google Sheets API setup
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 
-def get_authenticated_service():
+def get_google_sheets_credentials():
     creds = None
-    # Check if token.json exists for storing the OAuth tokens
-    if os.path.exists(TOKEN_FILE):
-        creds = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
 
-    # If there are no valid credentials available, log in using OAuth
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            # Replace 'client_secrets.json' with the OAuth credentials file you download
             flow = InstalledAppFlow.from_client_secrets_file(
                 'client_secrets.json', SCOPES)
             creds = flow.run_local_server(port=0)
 
-        # Save the credentials for future runs
-        with open(TOKEN_FILE, 'w') as token:
+        with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
     return creds
 
+# Function to get title and description from Google Sheets
 
-def access_google_sheets(sheet_id, worksheet_name):
-    # Authenticate and get access to Google Sheets API
-    creds = get_authenticated_service()
+
+def get_title_and_description():
+    creds = get_google_sheets_credentials()
     client = gspread.authorize(creds)
+    sheet = client.open_by_key(SHEET_ID).worksheet(WORKSHEET_NAME)
 
-    # Open the Google Sheet by ID
-    sheet = client.open_by_key(sheet_id).worksheet(worksheet_name)
-
-    # Read the data from A1 and B1
+    # Assuming title is in A1 and description is in B1
     title = sheet.acell('A1').value
     description = sheet.acell('B1').value
 
-    # If both A1 and B1 have data, process it
-    if title and description:
-        print(f"Title: {title}\nDescription: {description}")
+    return title, description
 
-        # Clear the data from A1 and B1 after reading
-        sheet.update([['']], 'A1')
-        sheet.update([['']], 'B1')
-        print("A1 and B1 have been cleared for the next entry.")
-    else:
-        print("A1 and B1 are empty. Nothing to process.")
+# Function to upload audio file to Google Cloud Storage
+
+
+def upload_audio_to_gcs(bucket_name, local_audio_path):
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+
+    # Use the file's basename as the GCS object name
+    filename = os.path.basename(local_audio_path)
+    blob = bucket.blob(filename)
+
+    # Upload the file to GCS
+    blob.upload_from_filename(local_audio_path)
+    print(f"Uploaded {filename} to Google Cloud Storage.")
+
+    # Return the public URL of the uploaded file
+    return f"http://storage.googleapis.com/{bucket_name}/{filename}"
+
+# Function to update the RSS feed with the new episode
+
+
+def update_rss_feed(episode_title, episode_description, audio_url):
+    # Parse the existing RSS feed file
+    try:
+        tree = ET.parse(RSS_FEED_FILE)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"RSS feed file '{RSS_FEED_FILE}' not found.")
+
+    root = tree.getroot()
+    channel = root.find('channel')
+
+    # Create a new <item> for the episode
+    item = ET.SubElement(channel, 'item')
+
+    # Add title
+    title = ET.SubElement(item, 'title')
+    title.text = episode_title
+
+    # Add description
+    description = ET.SubElement(item, 'description')
+    description.text = episode_description
+
+    # Add enclosure with audio URL
+    enclosure = ET.SubElement(
+        item, 'enclosure', url=audio_url, length="12345678", type="audio/mpeg")
+
+    # Add pubDate
+    pubDate = ET.SubElement(item, 'pubDate')
+    pubDate.text = datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S GMT')
+
+    # Add guid
+    guid = ET.SubElement(item, 'guid')
+    guid.text = audio_url
+
+    # Save the updated RSS feed
+    tree.write(RSS_FEED_FILE, encoding='utf-8', xml_declaration=True)
+    print(f"RSS feed updated with episode: {episode_title}")
+
+# Function to find the most recent audio file in the directory based on timestamp
+
+
+def get_latest_audio_file(directory, file_extension=".mp3"):
+    files = [f for f in os.listdir(directory) if f.endswith(file_extension)]
+    if not files:
+        raise ValueError("No audio files found in the directory.")
+    latest_file = max(files, key=lambda f: os.path.getmtime(
+        os.path.join(directory, f)))
+    return os.path.join(directory, latest_file)
+
+# Function to monitor the directory for new files
+
+
+def monitor_directory(directory, check_interval=10):
+    print(f"Monitoring directory: {directory} for new audio files...")
+    previous_files = set(os.listdir(directory))
+
+    while True:
+        time.sleep(check_interval)  # Wait before checking again
+        current_files = set(os.listdir(directory))
+        new_files = current_files - previous_files
+
+        if new_files:
+            latest_audio_file = max(
+                new_files, key=lambda f: os.path.getmtime(os.path.join(directory, f)))
+            if latest_audio_file.endswith(".mp3"):
+                print(f"New audio file detected: {latest_audio_file}")
+                return os.path.join(directory, latest_audio_file)
+
+        previous_files = current_files
+
+# Main workflow
+
+
+def main():
+    # Step 1: Monitor the directory for new audio files
+    try:
+        latest_audio_file = monitor_directory(AUDIO_DIRECTORY)
+        print(f"Latest audio file detected: {latest_audio_file}")
+    except ValueError as e:
+        print(f"Error: {e}")
+        return
+
+    # Step 2: Upload the audio file to Google Cloud Storage
+    try:
+        audio_url = upload_audio_to_gcs(BUCKET_NAME, latest_audio_file)
+        print(f"Audio file uploaded to: {audio_url}")
+    except Exception as e:
+        print(f"Error uploading file to Google Cloud: {e}")
+        return
+
+    # Step 3: Fetch the title and description from Google Sheets
+    try:
+        episode_title, episode_description = get_title_and_description()
+        print(f"Fetched title and description from Google Sheets.")
+    except Exception as e:
+        print(f"Error fetching title and description: {e}")
+        return
+
+    # Step 4: Update the RSS feed
+    try:
+        update_rss_feed(episode_title, episode_description, audio_url)
+    except Exception as e:
+        print(f"Error updating RSS feed: {e}")
 
 
 if __name__ == "__main__":
-    # Example Google Sheet ID and Worksheet Name
-    # Replace with your Google Sheet ID
-    SHEET_ID = '19R0p9Ps-4A3_9eU_dy5ZiGyF_FwLyued9TsZpYkZVpg'
-    WORKSHEET_NAME = 'Sheet1'  # Replace with your worksheet name
-
-    # Access Google Sheets
-    access_google_sheets(SHEET_ID, WORKSHEET_NAME)
-
-    print("Script completed successfully")
+    main()

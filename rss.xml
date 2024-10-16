@@ -6,13 +6,18 @@
     <description>Your podcast description goes here.</description>
     <language>en-us</language>
     <itunes:email>rocco.colasaccojr@gmail.com</itunes:email>
+    
+    <!-- Ensure the iTunes category tag is present -->
+    <itunes:category text="Technology"> <!-- Adjust the category as needed -->
+      <itunes:category text="Podcasting" />
+    </itunes:category>
 
     <item>
       <title>test2</title>
       <description>test 5345</description>
       <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241015_114235d.mp3" length="12345678" type="audio/mpeg" />
       <pubDate>Wed, 16 Oct 2024 15:36:34 GMT</pubDate>
-      <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241015_114235d.mp3</guid>
+      <guid isPermaLink="false">http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241015_114235d.mp3</guid>
     </item>
     
   </channel>

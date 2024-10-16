@@ -1,15 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
   <channel>
-    <title>Your Podcast Title</title>
+    <title>radioai</title>
     <link>https://axiodisi.github.io/podcast-automation/rss.xml</link>
-    <description>Your podcast description goes here.</description>
+    <description>Good</description>
     <language>en-us</language>
     <itunes:email>rocco.colasaccojr@gmail.com</itunes:email>
     <itunes:category text="Technology">
       <itunes:category text="Podcasting" />
     </itunes:category>
-    
+    <!-- Add your cover art URL here -->
+    <itunes:image href="https://storage.cloud.google.com/audio-upload-queue/cover.png" />
     <item>
       <title>test2</title>
       <description>test 5345</description>

@@ -12,7 +12,6 @@ from google.oauth2.credentials import Credentials
 
 # Google Cloud Storage and RSS feed settings
 BUCKET_NAME = 'audio-upload-queue'  # Replace with your Google Cloud bucket name
-# Make sure this is correct
 RSS_FEED_FILE = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation\rss.xml'
 AUDIO_DIRECTORY = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\output'
 ARCHIVE_DIRECTORY = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\output\archive'
@@ -87,7 +86,8 @@ def update_rss_feed(episode_title, episode_description, audio_url):
 
 
 def get_latest_audio_file(directory, file_extension=".mp3"):
-    files = [f for f in os.listdir(directory) if f.endswith(file_extension)]
+    files = [f for f in os.listdir(directory) if f.endswith(
+        file_extension) and not f.endswith('.processed')]
     if not files:
         return None
     latest_file = max(files, key=lambda f: os.path.getmtime(
@@ -95,12 +95,27 @@ def get_latest_audio_file(directory, file_extension=".mp3"):
     return os.path.join(directory, latest_file)
 
 
-def move_file_to_archive(file_path, archive_directory):
+def move_file_to_archive(file_path, archive_directory, retries=5, delay=2):
     if not os.path.exists(archive_directory):
         os.makedirs(archive_directory)
-    new_location = shutil.move(file_path, os.path.join(
-        archive_directory, os.path.basename(file_path)))
-    print(f"Moved {file_path} to {new_location}")
+
+    attempt = 0
+    while attempt < retries:
+        try:
+            # Rename the file to mark it as processed before moving
+            processed_file_path = file_path + ".processed"
+            os.rename(file_path, processed_file_path)
+            new_location = shutil.move(processed_file_path, os.path.join(
+                archive_directory, os.path.basename(processed_file_path)))
+            print(f"Moved {processed_file_path} to {new_location}")
+            return new_location
+        except Exception as e:
+            print(f"Attempt {attempt + 1}/{retries} failed: {e}")
+            time.sleep(delay)
+            attempt += 1
+
+    raise Exception(
+        f"Failed to move {file_path} to archive after {retries} attempts.")
 
 
 def commit_rss_to_git():
@@ -148,7 +163,7 @@ def main():
                 print(f"Error updating RSS feed: {e}")
                 continue
 
-            # Move the old audio file to the archive folder
+            # Move the old audio file to the archive folder and mark as processed
             try:
                 move_file_to_archive(latest_audio_file, ARCHIVE_DIRECTORY)
             except Exception as e:
@@ -162,7 +177,8 @@ def main():
                 print(f"Error committing RSS feed to Git: {e}")
 
         else:
-            print("No new audio files detected. Checking again in 10 seconds...")
+            print(
+                "No new unprocessed audio files detected. Checking again in 10 seconds...")
 
         time.sleep(10)  # Check every 10 seconds
 

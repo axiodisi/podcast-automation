@@ -33,11 +33,7 @@
     <podcast:funding url="https://yourfundingurl.com">Support this show!</podcast:funding>
 
     <item>
-      <title>test2</title>
-      <description>test 5345</description>
-      <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241015_114235d.mp3" length="12345678" type="audio/mpeg" />
-      <pubDate>Wed, 16 Oct 2024 15:36:34 GMT</pubDate>
-      <guid isPermaLink="false">http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241015_114235d.mp3</guid>
+      
     </item>
   </channel>
 </rss>

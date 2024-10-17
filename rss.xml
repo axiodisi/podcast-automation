@@ -6,7 +6,6 @@
   <channel>
     <title>radioai</title>
     <link>https://axiodisi.github.io/podcast-automation/rss.xml</link>
-    <!-- Add self-referential atom:link -->
     <atom:link href="https://axiodisi.github.io/podcast-automation/rss.xml" rel="self" type="application/rss+xml" />
     <description>Goodl</description>
     <language>en-us</language>
@@ -15,12 +14,24 @@
       <itunes:name>radioai</itunes:name>
       <itunes:email>rocco.colasaccojr@gmail.com</itunes:email>
     </itunes:owner>
-    <!-- Add missing explicit tag -->
     <itunes:explicit>no</itunes:explicit>
     <itunes:category text="Technology">
       <itunes:category text="Podcasting" />
     </itunes:category>
     <itunes:image href="https://storage.googleapis.com/audio-upload-queue/cover.png" />
+    
+    <!-- Add podcast:locked element -->
+    <podcast:locked>no</podcast:locked>
+    
+    <!-- Add podcast:value (optional for value-for-value model) -->
+    <podcast:value type="lightning">
+      <podcast:method>keysend</podcast:method>
+      <podcast:recipient>YOUR_LIGHTNING_ADDRESS_HERE</podcast:recipient>
+    </podcast:value>
+    
+    <!-- Add funding element (optional) -->
+    <podcast:funding url="https://yourfundingurl.com">Support this show!</podcast:funding>
+
     <item>
       <title>test2</title>
       <description>test 5345</description>

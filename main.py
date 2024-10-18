@@ -95,15 +95,30 @@ def get_latest_audio_file(directory, file_extension=".mp3"):
     return os.path.join(directory, latest_file)
 
 
-def move_file_to_archive(file_path, archive_directory, retries=5, delay=2):
+def get_unique_filename(destination, filename):
+    base, extension = os.path.splitext(filename)
+    unique_filename = filename
+    counter = 1
+
+    while os.path.exists(os.path.join(destination, unique_filename)):
+        unique_filename = f"{base}_{counter}{extension}"
+        counter += 1
+
+    return unique_filename
+
+
+def move_file_to_archive(file_path, archive_directory, retries=5, delay=5):
     if not os.path.exists(archive_directory):
         os.makedirs(archive_directory)
+
+    filename = os.path.basename(file_path)
+    unique_filename = get_unique_filename(archive_directory, filename)
 
     attempt = 0
     while attempt < retries:
         try:
             new_location = shutil.move(file_path, os.path.join(
-                archive_directory, os.path.basename(file_path)))
+                archive_directory, unique_filename))
             print(f"Moved {file_path} to {new_location}")
             return new_location
         except Exception as e:

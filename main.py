@@ -99,35 +99,24 @@ def move_file_to_archive(file_path, archive_directory, retries=5, delay=2):
     if not os.path.exists(archive_directory):
         os.makedirs(archive_directory)
 
-    processed_file_path = file_path + ".processed"
+    attempt = 0
+    while attempt < retries:
+        try:
+            new_location = shutil.move(file_path, os.path.join(
+                archive_directory, os.path.basename(file_path)))
+            print(f"Moved {file_path} to {new_location}")
+            return new_location
+        except Exception as e:
+            print(f"Attempt {attempt + 1}/{retries} failed: {e}")
+            time.sleep(delay)
+            attempt += 1
 
-    try:
-        # Rename the file to mark it as processed before moving
-        os.rename(file_path, processed_file_path)
-        print(f"Renamed {file_path} to {processed_file_path}")
-
-        attempt = 0
-        while attempt < retries:
-            try:
-                new_location = shutil.move(processed_file_path, os.path.join(
-                    archive_directory, os.path.basename(processed_file_path)))
-                print(f"Moved {processed_file_path} to {new_location}")
-                return new_location
-            except Exception as e:
-                print(f"Attempt {attempt + 1}/{retries} failed: {e}")
-                time.sleep(delay)
-                attempt += 1
-
-        raise Exception(
-            f"Failed to move {processed_file_path} to archive after {retries} attempts.")
-    except Exception as e:
-        print(f"Failed to rename {file_path} to {processed_file_path}: {e}")
-        raise e
+    raise Exception(
+        f"Failed to move {file_path} to archive after {retries} attempts.")
 
 
 def commit_rss_to_git():
     try:
-        # Navigate to the podcast-automation directory
         subprocess.run(['git', '-C', r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation',
                        'add', RSS_FEED_FILE], check=True)
         subprocess.run(['git', '-C', r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation',
@@ -140,13 +129,12 @@ def commit_rss_to_git():
 
 
 def main():
-    processed_files = set()
     print("Monitoring directory for new audio files...")
 
     while True:  # Infinite loop to monitor the directory
         latest_audio_file = get_latest_audio_file(AUDIO_DIRECTORY)
 
-        if latest_audio_file and latest_audio_file not in processed_files:
+        if latest_audio_file:
             print(f"Latest audio file detected: {latest_audio_file}")
 
             # Upload the audio file to Google Cloud Storage
@@ -172,19 +160,18 @@ def main():
                 print(f"Error updating RSS feed: {e}")
                 continue
 
-            # Move the old audio file to the archive folder and mark as processed
-            try:
-                move_file_to_archive(latest_audio_file, ARCHIVE_DIRECTORY)
-                processed_files.add(latest_audio_file)
-            except Exception as e:
-                print(f"Error moving file to archive: {e}")
-                continue
-
             # Commit the RSS feed to Git
             try:
                 commit_rss_to_git()
             except Exception as e:
                 print(f"Error committing RSS feed to Git: {e}")
+
+            # Move the audio file to the archive folder after all operations are completed
+            try:
+                move_file_to_archive(latest_audio_file, ARCHIVE_DIRECTORY)
+            except Exception as e:
+                print(f"Error moving file to archive: {e}")
+                continue
 
         else:
             print(

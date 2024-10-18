@@ -10,7 +10,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 
 # Google Cloud Storage and RSS feed settings
-BUCKET_NAME = 'audio-upload-queue'  # Replace with your Google Cloud bucket name
+BUCKET_NAME = 'audio-upload-queue'
 RSS_FEED_FILE = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation\rss.xml'
 AUDIO_DIRECTORY = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\output'
 SHEET_ID = '19R0p9Ps-4A3_9eU_dy5ZiGyF_FwLyued9TsZpYkZVpg'
@@ -18,6 +18,9 @@ WORKSHEET_NAME = 'Sheet1'
 
 # Google Sheets API setup
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+
+# Set to keep track of processed files in memory
+processed_files = set()
 
 
 def get_google_sheets_credentials():
@@ -96,9 +99,9 @@ def get_latest_audio_file(directory, file_extension=".mp3"):
 def commit_rss_to_git():
     try:
         subprocess.run(['git', '-C', r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation',
-                       'add', RSS_FEED_FILE], check=True)
+                        'add', RSS_FEED_FILE], check=True)
         subprocess.run(['git', '-C', r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation',
-                       'commit', '-m', 'Update RSS feed with new episode'], check=True)
+                        'commit', '-m', 'Update RSS feed with new episode'], check=True)
         subprocess.run(
             ['git', '-C', r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation', 'push'], check=True)
         print("Committed and pushed RSS feed to Git repository.")
@@ -109,11 +112,14 @@ def commit_rss_to_git():
 def main():
     print("Monitoring directory for new audio files...")
 
-    while True:  # Infinite loop to monitor the directory
+    while True:
         latest_audio_file = get_latest_audio_file(AUDIO_DIRECTORY)
 
-        if latest_audio_file:
+        if latest_audio_file and latest_audio_file not in processed_files:
             print(f"Latest audio file detected: {latest_audio_file}")
+
+            # Mark file as processed
+            processed_files.add(latest_audio_file)
 
             # Upload the audio file to Google Cloud Storage
             try:
@@ -148,7 +154,7 @@ def main():
             print(
                 "No new unprocessed audio files detected. Checking again in 10 seconds...")
 
-        time.sleep(10)  # Check every 10 seconds
+        time.sleep(10)
 
 
 if __name__ == "__main__":

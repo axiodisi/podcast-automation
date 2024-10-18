@@ -2,7 +2,6 @@ import os
 import time
 import xml.etree.ElementTree as ET
 import datetime
-import shutil
 import subprocess
 import gspread
 from google.cloud import storage
@@ -14,7 +13,6 @@ from google.oauth2.credentials import Credentials
 BUCKET_NAME = 'audio-upload-queue'  # Replace with your Google Cloud bucket name
 RSS_FEED_FILE = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation\rss.xml'
 AUDIO_DIRECTORY = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\output'
-ARCHIVE_DIRECTORY = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\output\archive'
 SHEET_ID = '19R0p9Ps-4A3_9eU_dy5ZiGyF_FwLyued9TsZpYkZVpg'
 WORKSHEET_NAME = 'Sheet1'
 
@@ -95,41 +93,6 @@ def get_latest_audio_file(directory, file_extension=".mp3"):
     return os.path.join(directory, latest_file)
 
 
-def get_unique_filename(destination, filename):
-    base, extension = os.path.splitext(filename)
-    unique_filename = filename
-    counter = 1
-
-    while os.path.exists(os.path.join(destination, unique_filename)):
-        unique_filename = f"{base}_{counter}{extension}"
-        counter += 1
-
-    return unique_filename
-
-
-def move_file_to_archive(file_path, archive_directory, retries=5, delay=5):
-    if not os.path.exists(archive_directory):
-        os.makedirs(archive_directory)
-
-    filename = os.path.basename(file_path)
-    unique_filename = get_unique_filename(archive_directory, filename)
-
-    attempt = 0
-    while attempt < retries:
-        try:
-            new_location = shutil.move(file_path, os.path.join(
-                archive_directory, unique_filename))
-            print(f"Moved {file_path} to {new_location}")
-            return new_location
-        except Exception as e:
-            print(f"Attempt {attempt + 1}/{retries} failed: {e}")
-            time.sleep(delay)
-            attempt += 1
-
-    raise Exception(
-        f"Failed to move {file_path} to archive after {retries} attempts.")
-
-
 def commit_rss_to_git():
     try:
         subprocess.run(['git', '-C', r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation',
@@ -180,13 +143,6 @@ def main():
                 commit_rss_to_git()
             except Exception as e:
                 print(f"Error committing RSS feed to Git: {e}")
-
-            # Move the audio file to the archive folder after all operations are completed
-            try:
-                move_file_to_archive(latest_audio_file, ARCHIVE_DIRECTORY)
-            except Exception as e:
-                print(f"Error moving file to archive: {e}")
-                continue
 
         else:
             print(

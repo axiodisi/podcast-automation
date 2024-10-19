@@ -13,8 +13,8 @@ from google.oauth2.credentials import Credentials
 BUCKET_NAME = 'audio-upload-queue'
 RSS_FEED_FILE = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation\rss.xml'
 AUDIO_DIRECTORY = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\output'
-SHEET_ID = '19R0p9Ps-4A3_9eU_dy5ZiGyF_FwLyued9TsZpYkZVpg'
-WORKSHEET_NAME = 'Sheet1'
+SHEET_ID = '1xVPYIAivLMGqKKveirS3CVNyftNMz6c6CQG0beULjtI'
+WORKSHEET_NAME = 'rad-pod-tit-soc-db'
 
 # Google Sheets API setup
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']

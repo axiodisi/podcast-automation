@@ -1,385 +1,678 @@
 <?xml version="1.0" ?>
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" xmlns:ns1="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:ns2="https://podcastindex.org/namespace/1.0" version="2.0">
     
+    
   
+    
     <channel>
         
+        
     
+        
         <title>radioai</title>
         
+        
     
+        
         <link>https://axiodisi.github.io/podcast-automation/rss.xml</link>
         
+        
     
+        
         <ns0:link href="https://axiodisi.github.io/podcast-automation/rss.xml" rel="self" type="application/rss+xml"/>
         
+        
     
+        
         <description>Goodl</description>
         
+        
     
+        
         <language>en-us</language>
         
+        
     
+        
         <ns1:author>radioai</ns1:author>
         
+        
     
+        
         <ns1:owner>
             
+            
       
+            
             <ns1:name>radioai</ns1:name>
             
+            
       
+            
             <ns1:email>rocco.colasaccojr@gmail.com</ns1:email>
             
+            
     
+        
         </ns1:owner>
         
+        
     
+        
         <ns1:explicit>no</ns1:explicit>
         
+        
     
+        
         <ns1:category text="Technology">
             
+            
       
+            
             <ns1:category text="Podcasting"/>
             
+            
     
+        
         </ns1:category>
         
+        
     
+        
         <ns1:image href="https://storage.googleapis.com/audio-upload-queue/cover.jpg"/>
         
+        
     
+        
         <ns2:locked>no</ns2:locked>
         
+        
     
+        
         <ns2:value type="lightning">
             
+            
       
+            
             <ns2:method>keysend</ns2:method>
             
+            
       
+            
             <ns2:recipient>YOUR_LIGHTNING_ADDRESS_HERE</ns2:recipient>
             
+            
     
+        
         </ns2:value>
         
+        
     
+        
         <ns2:funding url="https://yourfundingurl.com">Support this show!</ns2:funding>
         
+        
 
     
+        
         <item>
             
+            
       
+            
             <title>Unmasking the Machine: ActBlue Exposed</title>
             
+            
       
+            
             <description>Dive into the belly of the beast with &quot;Unmasking the Machine: ActBlue Exposed.&quot; Join Jenny, Molly, and the ever-passionate Bob as they dissect the explosive allegations surrounding ActBlue and its donation scandals, including contributions from beyond the grave! Are these platforms the lifeline of grassroots movements, or are they cleverly crafted channels for the puppet masters pulling the strings?</description>
             
+            
       
+            
             <enclosure url="https://storage.googleapis.com/audio-upload-queue/stitched_audio_20241017_175548.mp3" length="12345678" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Thu, 17 Oct 2024 17:55:57 GMT</pubDate>
             
+            
       
+            
             <guid>https://storage.googleapis.com/audio-upload-queue/stitched_audio_20241017_175548.mp3</guid>
             
+            
     
+        
         </item>
+        
         
 
     
+        
         <item>
             
+            
       
+            
             <title>Shockwaves in the Middle East: Truth or Turmoil?</title>
             
+            
       
+            
             <description>Shockwaves in the Middle East: Truth or Turmoil? delves into the potential impact of recent news that Yahya Sinwar, a pivotal Hamas leader, is reportedly dead. Join Jenny, Molly, and Bob as they navigate the murky waters of political speculation and media narratives.</description>
             
+            
       
+            
             <enclosure url="https://storage.googleapis.com/audio-upload-queue/stitched_audio_20241017_183811.mp3" length="12345678" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Thu, 17 Oct 2024 18:38:20 GMT</pubDate>
             
+            
       
+            
             <guid>https://storage.googleapis.com/audio-upload-queue/stitched_audio_20241017_183811.mp3</guid>
             
+            
     
+        
         </item>
+        
         
 
     
+        
         <item>
             
+            
       
+            
             <title>Trump's Debt Drama: Kindness or Calculated?</title>
             
+            
       
+            
             <description>In this thought-provoking episode titled &quot;Trump's Debt Drama: Kindness or Calculated?&quot;, Jenny, Molly, and Bob dive deep into the intriguing story of Donald Trump wiping out a family's farm debt in 1986. Was this an act of genuine compassion or a calculated political move?</description>
             
+            
       
+            
             <enclosure url="https://storage.googleapis.com/audio-upload-queue/stitched_audio_20241017_185327.mp3" length="12345678" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Thu, 17 Oct 2024 19:53:40 GMT</pubDate>
             
+            
       
+            
             <guid>https://storage.googleapis.com/audio-upload-queue/stitched_audio_20241017_185327.mp3</guid>
             
+            
     
+        
         </item>
+        
         
 
     
+        
         <item>
             
+            
       
+            
             <title>Nuclear Renaissance: Power or Peril?</title>
             
+            
       
+            
             <description>&quot;Nuclear Renaissance: Power or Peril?&quot; dives into the contentious debate surrounding the resurgence of nuclear energy. In this captivating podcast, Jenny, Molly, and Bob wrestle with the optimistic vision of a nuclear future and the shadowy concerns of militarization and nuclear waste. Is this truly a renaissance of clean power, or is there a hidden agenda at play? As they unravel the complex threads of technological advancements, potential risks, and historical parallels, the trio challenges listeners to question the narratives and advocate for transparency. With provocative insights and critical reflections, this episode will keep you at the edge of your seat, questioning whether our path forward is one of promise or peril.</description>
             
+            
       
+            
             <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241017_191647.mp3" length="12345678" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Thu, 17 Oct 2024 19:17:04 GMT</pubDate>
             
+            
       
+            
             <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241017_191647.mp3</guid>
             
+            
     
+        
         </item>
+        
         
 
     
+        
         <item>
             
+            
       
+            
             <title>Breaking Boxes: Beyond Identity Politics</title>
             
+            
       
+            
             <description>Join hosts Jenny, Molly, and Bob in a provocative episode of &quot;Breaking Boxes: Beyond Identity Politics&quot; as they delve into the explosive backlash facing Sheriff T.K. Waters after his public endorsement of Trump. In a world where political allegiance can trigger accusations of betraying one's racial identity, our hosts challenge listeners to rethink the rigid narrative confines. They debate the dangers of silencing diverse opinions, especially when a Black public figure defies political stereotypes. Can we foster respectful discourse without resorting to personal attacks? Tune in for a candid conversation urging open dialogue, freedom of thought, and the importance of focusing on policies over identity-based criticisms. This episode dares to bridge divides and encourages constructive conversations in the face of controversy.</description>
             
+            
       
+            
             <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241018_064153.mp3" length="12345678" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Fri, 18 Oct 2024 06:42:32 GMT</pubDate>
             
+            
       
+            
             <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241018_064153.mp3</guid>
             
+            
     
+        
         </item>
+        
         
 
     
+        
         <item>
             
+            
       
+            
             <title>Trump vs. The System: Justice or Witch Hunt?</title>
             
+            
       
+            
             <description>In a riveting exchange, our hosts dive into the stormy debate surrounding Trump's claims against Judge Chutkan's decision, igniting discussions on justice, election interference, and the fine line between accountability and political maneuvering. Is this legal drama mere 'theater' or a genuine pursuit of justice? With passionate insights into deep state conspiracies, bias in the justice system, and the broader implications for democracy itself, each host challenges the relationship between politics and law in what could be a historical precedent. Ambiguous boundaries blur as they ask: Is America witnessing justice in action or an election 'witch hunt'? Tune in to this thought-provoking episode to explore the fiercely contested landscape of justice versus politics.</description>
             
+            
       
+            
             <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241018_085246.mp3" length="12345678" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Fri, 18 Oct 2024 08:52:59 GMT</pubDate>
             
+            
       
+            
             <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241018_085246.mp3</guid>
             
+            
     
+        
         </item>
+        
         
 
     
+        
         <item>
             
+            
       
+            
             <title>Beyond the Numbers: Hidden Agendas in Earnings Calls</title>
             
+            
       
+            
             <description>Dive into &quot;Beyond the Numbers: Hidden Agendas in Earnings Calls,&quot; where hosts Jenny, Bob, and Molly unravel what lies beneath corporate earnings reports. Tesla's Elon Musk might have surprises that go beyond electric vehicles, touching on AI and even space ventures. Are government regulations intentionally holding back Tesla's autonomous driving technologies? As Verizon's 5G rollout continues, are they merely enhancing connectivity or aiding surveillance efforts? Consider Boeing's defense contracts and secretive industry developments amidst supply chain struggles. Lastly, explore SAP's cloud dominance as a potential enabler of enterprise success or a next step towards remote surveillance. Tune in for a gripping exploration of conspiracy and reality in the world of corporate earnings, as these companies shape our future in unimaginable ways.</description>
             
+            
       
+            
             <enclosure url="https://storage.googleapis.com/audio-upload-queue/stitched_audio_20241018_102923.mp3" length="12345678" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Fri, 18 Oct 2024 10:29:34 GMT</pubDate>
             
+            
       
+            
             <guid>https://storage.googleapis.com/audio-upload-queue/stitched_audio_20241018_102923.mp3</guid>
             
+            
     
+        
         </item>
+        
         
 
     
+        
         <item>
             
+            
       
+            
             <title>Trump, Ukraine, and the Cost of Intervention</title>
             
+            
       
+            
             <description>Dive into the provocative world of international politics in our latest episode, &quot;Trump, Ukraine, and the Cost of Intervention.&quot; What happens when former President Trump blames Ukrainian leader Zelensky for Russia's shocking invasion? Is it audacious rhetoric or a valid point? Join Jenny, Bob, and Molly as they untangle this web of geopolitical tension, NATO expansion fears, and the effectiveness of U.S. foreign policy. Debate rages over moral responsibility versus strategic interest—does protecting democracy justify risking another endless war, and at what cost? With tensions as fraught as the Cold War and sanctions failing to deter Russia, we're faced with high-stakes decisions that could alter the future of global stability. Can the U.S. uphold its ideals without being drawn into another foreign entanglement—or are we doomed to repeat the past?</description>
             
+            
       
+            
             <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241018_112011.mp3" length="12345678" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Fri, 18 Oct 2024 11:20:23 GMT</pubDate>
             
+            
       
+            
             <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241018_112011.mp3</guid>
             
+            
     
+        
         </item>
+        
         
 
     
+        
         <item>
             
+            
       
+            
             <title>&quot;Faith in Politics: A Divided Dialogue&quot;</title>
             
+            
       
+            
             <description>In this provocative episode of &quot;Faith in Politics: A Divided Dialogue,&quot; we dive into the recent clash where Kamala Harris was interrupted by a chant of &quot;Jesus is Lord,&quot; igniting a firestorm over religion's place in the Democratic Party. Charlie Kirk claims this illustrates Christians being unwelcome in leftist spaces. But is that the whole story? Join Jenny, Bob, and Molly as they unravel the complex layers of religion, policy, and respect in today's fractious political landscape.</description>
             
+            
       
+            
             <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241019_100933.mp3" length="12345678" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Sat, 19 Oct 2024 10:09:46 GMT</pubDate>
             
+            
       
+            
             <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241019_100933.mp3</guid>
             
+            
     
+        
         </item>
+        
         
 
     
+        
         <item>
             
+            
       
+            
             <title>Unity Amidst Disagreement</title>
             
+            
       
+            
             <description>Join hosts Molly and Jenny as they dive into the hotbed of American division, tackling the explosive issues that threaten to tear us apart. In &quot;Unity Amidst Disagreement,&quot; they engage in raw, unfiltered conversations that dare to ask: Can we truly coexist peacefully despite our clashing beliefs? Discover the power of dialogue in bridging divides across this fractured nation. Prepare for a thought-provoking journey that refuses to shy away from controversy, challenging listeners to envision a unified future amid discord. Because ultimately, like it or not, we're all in this together.</description>
             
+            
       
+            
             <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241020_183339.mp3" length="12345678" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Sun, 20 Oct 2024 18:33:54 GMT</pubDate>
             
+            
       
+            
             <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241020_183339.mp3</guid>
             
+            
     
+        
         </item>
+        
         
 
     
+        
         <item>
             
+            
       
+            
             <title>Digital Dilemma: Trust, Safety, and the Catch-22 of Cybersecurity</title>
             
+            
       
+            
             <description>In this riveting episode of &quot;Digital Dilemma,&quot; we dive headfirst into the unsettling reality of repeated cyber attacks on the Internet Archive, sparking a heated debate on trust, safety, and responsibility in the digital age. As we scrutinize the failings of government and tech giants to protect sensitive user data, the discussion unfolds to reveal the irony of a digital library struggling to secure knowledge. Explore the double-edged sword of decentralized platforms and the delicate balance between regulation and innovation. With insights into education, transparency, and accountability, this conversation probes the very core of digital literacy and the role of public institutions in a world where data breaches threaten to undermine public trust. Join us as we navigate this complex labyrinth, seeking solutions for a safe and collaborative digital future.</description>
             
+            
       
+            
             <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_124518.mp3" length="4297004" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Mon, 21 Oct 2024 19:45:32 GMT</pubDate>
             
-      
-            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_124518.mp3</guid>
             
       
+            
+            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_124518.mp3</guid>
+            
+            
+      
+        
         </item>
+        
           
 
     
+        
         <item>
             
+            
       
+            
             <title>Elon Musk's Million-Dollar Election Giveaway: Genius or Gimmick?</title>
             
+            
       
+            
             <description>In this electrifying episode, we dive into the headlines buzzing around Elon Musk's jaw-dropping decision to give away $1 million every day until the looming election. Linked to the signing of a petition, this audacious move has already crowned its first winner. Is this a stroke of genius or just another media-making gimmick? Join us as we unpack the controversy, explore the strategy behind Musk's million-dollar giveaway, and debate its impact on the upcoming electoral landscape. Is Musk shaping a transformative narrative, or simply turning political engagement into a spectacle? Tune in to find out!</description>
             
+            
       
+            
             <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_165424.mp3" length="5250860" type="audio/mpeg"/>
             
+            
       
+            
             <pubDate>Mon, 21 Oct 2024 23:54:37 GMT</pubDate>
             
+            
       
+            
             <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_165424.mp3</guid>
             
+            
     
+        
         </item>
         
+        
     
+        
         <item>
+            
+            
             <title>&quot;Tax Cuts or Ticking Time Bomb?&quot;</title>
             
+            
     
+            
             <description>In this riveting episode, we dive into the explosive debate over Trump's controversial tax proposals—no tax on tips, overtime, or Social Security. Tulsi Gabbard claims this is a bold move to prioritize American citizens over party politics. But is it a genuine attempt to empower the middle class or just a ticking time bomb waiting to destabilize essential services? Join Jenny, Bob, and Molly as they dissect the implications of cutting taxes in a complex economy. With sharp insights and opposing views, this discussion explores whether Trump's plan is the savior of the average worker or simply a populist ploy lacking a viable long-term strategy. Buckle up for a thought-provoking conversation that challenges the status quo and asks—are we really prepared for the fallout?</description>
             
+            
     
+            
             <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_171144.mp3" length="4722860" type="audio/mpeg"/>
             
+            
     
+            
             <pubDate>Tue, 22 Oct 2024 00:11:59 GMT</pubDate>
             
-    
-            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_171144.mp3</guid>
             
     
+            
+            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_171144.mp3</guid>
+            
+            
+    
+        
+        </item>
+        
+        
+    
+        
+        <item>
+            
+            
+            <title>&quot;Georgia's Gamble: Europe's Promise or Russian Roulette?&quot;</title>
+            
+            
+            <description>&quot;Georgia's Gamble: Europe's Promise or Russian Roulette?&quot; delves into the high-stakes geopolitical chess game playing out in Eastern Europe. Join Jenny, Bob, and Molly as they navigate the intricacies of Georgia's uprising against Kremlin influence, the allure of European integration, and the looming shadow of Russian aggression. With parallels to Ukraine and echoes of past conflicts, this podcast explores whether Georgia's march towards the West signals a brave new future or a dangerous provocation. Are these movements marks of true independence, or curtains for a catastrophic showdown? Engage in the thrilling analysis as our hosts debate the real risks and rewards of shaking Moscow's grip while questioning if the West is truly prepared to back these ambitious moves.</description>
+            
+            
+            <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_180724.mp3" length="12345678" type="audio/mpeg"/>
+            
+            
+            <pubDate>Mon, 21 Oct 2024 18:07:38 GMT</pubDate>
+            
+            
+            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_180724.mp3</guid>
+            
+        
+        </item>
+        
+        
+        <item>
+            
+            
+            <title>Church Clash: Politics, Police, and Free Speech</title>
+            
+            
+            <description>In this gripping podcast episode, our panel dives into a heated discussion over a controversial viral video involving Kamala Harris, police intervention, and a church's uneasy encounter. Accusations of government overreach and suppression of religious freedom clash with calls for context and verification. Is it a bold political move or an overblown narrative? We unravel the complex layers of free speech, law enforcement, and political rhetoric, questioning how social media impacts public perception and the fine line between maintaining order and silencing dissent. Join us for a thought-provoking exploration that challenges the boundaries of free expression in spaces meant for peace and reflection.</description>
+            
+            
+            <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_054219.mp3" length="12345678" type="audio/mpeg"/>
+            
+            
+            <pubDate>Tue, 22 Oct 2024 05:42:34 GMT</pubDate>
+            
+            
+            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_054219.mp3</guid>
+            
+        
+        </item>
+        
+        
+        <item>
+            
+            
+            <title>Market Mayhem: Who's Pulling the Strings?</title>
+            
+            
+            <description>In this gripping podcast episode, &quot;Market Mayhem: Who's Pulling the Strings?&quot;, hosts Jenny, Bob, and Molly delve into the chaotic world of the Indian stock market, exploring whether recent market volatility is the result of economic manipulation or natural market behavior. They debate the impact of global forces, political motivations, and powerful institutions that could be turning these financial tides to their advantage. As the trio tackles the symbiotic relationship between social media hysteria and financial fireworks, they challenge listeners to question who truly gains from market chaos. With a nod to financial literacy and personal agency, this episode seeks to empower individuals to navigate market storms with informed skepticism and strategic caution. Tune in for an eye-opening discussion that might just change the way you see the financial world.</description>
+            
+            
+            <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_064311.mp3" length="12345678" type="audio/mpeg"/>
+            
+            
+            <pubDate>Tue, 22 Oct 2024 06:43:26 GMT</pubDate>
+            
+            
+            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_064311.mp3</guid>
+            
+        
+        </item>
+        
+        
+        <item>
+            
+            
+            <title>&quot;The Voting Machine Dilemma: Truth or Paranoia?&quot;</title>
+            
+            
+            <description>In &quot;The Voting Machine Dilemma: Truth or Paranoia?&quot; podcast, join hosts Jenny, Bob, and Molly as they dive into the contentious debate over voting machine integrity and potential vote-switching claims in Tarrant County, Texas. With accusations flying about deep-state conspiracies and the manipulation of election outcomes, Bob takes a skeptical stance, questioning the transparency of hybrid voting systems. Molly challenges him to consider the strength of paper trails and the importance of evidence-based criticism. Amidst discussions of audits and the necessity of credible investigations, the trio explores how unchecked claims can erode trust in democracy, stoke fear, and lead to societal chaos. This thought-provoking episode asks whether we're safeguarding our electoral processes or succumbing to sensationalist paranoia.</description>
+            
+            
+            <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_083647.mp3" length="12345678" type="audio/mpeg"/>
+            
+            
+            <pubDate>Tue, 22 Oct 2024 08:37:03 GMT</pubDate>
+            
+            
+            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_083647.mp3</guid>
+            
+        
         </item>
         
     
         <item>
-            <title>&quot;Georgia's Gamble: Europe's Promise or Russian Roulette?&quot;</title>
-            <description>&quot;Georgia's Gamble: Europe's Promise or Russian Roulette?&quot; delves into the high-stakes geopolitical chess game playing out in Eastern Europe. Join Jenny, Bob, and Molly as they navigate the intricacies of Georgia's uprising against Kremlin influence, the allure of European integration, and the looming shadow of Russian aggression. With parallels to Ukraine and echoes of past conflicts, this podcast explores whether Georgia's march towards the West signals a brave new future or a dangerous provocation. Are these movements marks of true independence, or curtains for a catastrophic showdown? Engage in the thrilling analysis as our hosts debate the real risks and rewards of shaking Moscow's grip while questioning if the West is truly prepared to back these ambitious moves.</description>
-            <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_180724.mp3" length="12345678" type="audio/mpeg"/>
-            <pubDate>Mon, 21 Oct 2024 18:07:38 GMT</pubDate>
-            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241021_180724.mp3</guid>
-        </item>
-        <item>
-            <title>Church Clash: Politics, Police, and Free Speech</title>
-            <description>In this gripping podcast episode, our panel dives into a heated discussion over a controversial viral video involving Kamala Harris, police intervention, and a church's uneasy encounter. Accusations of government overreach and suppression of religious freedom clash with calls for context and verification. Is it a bold political move or an overblown narrative? We unravel the complex layers of free speech, law enforcement, and political rhetoric, questioning how social media impacts public perception and the fine line between maintaining order and silencing dissent. Join us for a thought-provoking exploration that challenges the boundaries of free expression in spaces meant for peace and reflection.</description>
-            <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_054219.mp3" length="12345678" type="audio/mpeg"/>
-            <pubDate>Tue, 22 Oct 2024 05:42:34 GMT</pubDate>
-            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_054219.mp3</guid>
-        </item>
-        <item>
-            <title>Market Mayhem: Who's Pulling the Strings?</title>
-            <description>In this gripping podcast episode, &quot;Market Mayhem: Who's Pulling the Strings?&quot;, hosts Jenny, Bob, and Molly delve into the chaotic world of the Indian stock market, exploring whether recent market volatility is the result of economic manipulation or natural market behavior. They debate the impact of global forces, political motivations, and powerful institutions that could be turning these financial tides to their advantage. As the trio tackles the symbiotic relationship between social media hysteria and financial fireworks, they challenge listeners to question who truly gains from market chaos. With a nod to financial literacy and personal agency, this episode seeks to empower individuals to navigate market storms with informed skepticism and strategic caution. Tune in for an eye-opening discussion that might just change the way you see the financial world.</description>
-            <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_064311.mp3" length="12345678" type="audio/mpeg"/>
-            <pubDate>Tue, 22 Oct 2024 06:43:26 GMT</pubDate>
-            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_064311.mp3</guid>
-        </item>
-        <item>
-            <title>&quot;The Voting Machine Dilemma: Truth or Paranoia?&quot;</title>
-            <description>In &quot;The Voting Machine Dilemma: Truth or Paranoia?&quot; podcast, join hosts Jenny, Bob, and Molly as they dive into the contentious debate over voting machine integrity and potential vote-switching claims in Tarrant County, Texas. With accusations flying about deep-state conspiracies and the manipulation of election outcomes, Bob takes a skeptical stance, questioning the transparency of hybrid voting systems. Molly challenges him to consider the strength of paper trails and the importance of evidence-based criticism. Amidst discussions of audits and the necessity of credible investigations, the trio explores how unchecked claims can erode trust in democracy, stoke fear, and lead to societal chaos. This thought-provoking episode asks whether we're safeguarding our electoral processes or succumbing to sensationalist paranoia.</description>
-            <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_083647.mp3" length="12345678" type="audio/mpeg"/>
-            <pubDate>Tue, 22 Oct 2024 08:37:03 GMT</pubDate>
-            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_083647.mp3</guid>
+            <title>&quot;Cash Abroad, Crises at Home: Balancing Aid and Accountability&quot;</title>
+            <description>&quot;Cash Abroad, Crises at Home: Balancing Aid and Accountability&quot; dives into the hotbed of debate surrounding U.S. foreign aid, notably the $400 million sent to Ukraine amidst domestic challenges. Jenny, Bob, and Molly engage in a fiery discussion, questioning the prioritization of international support over issues like crumbling infrastructure and underfunded schools at home. Bob insists on accountability and transparency, echoing frustrations over a perceived disconnect as Americans struggle economically. Molly argues for strategic international alliances, suggesting long-term security benefits. This episode pushes boundaries, challenging listeners to ponder: are we sacrificing domestic stability for global leadership? Join the conversation that probes the fine line between supporting allies and neglecting citizens, stressing the need for transparency and trust in governmental actions. Engage with the controversy and explore how a democratic society balances its roles on both the national and global stages.</description>
+            <enclosure url="http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_085039.mp3" length="12345678" type="audio/mpeg"/>
+            <pubDate>Tue, 22 Oct 2024 08:50:54 GMT</pubDate>
+            <guid>http://storage.googleapis.com/audio-upload-queue/stitched_audio_20241022_085039.mp3</guid>
         </item>
     </channel>
     
+    
+
 
 </rss>

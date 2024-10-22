@@ -9,6 +9,8 @@ import gspread
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.credentials import Credentials
 from xml.etree import ElementTree as ET
+from google.auth.transport.requests import Request
+import datetime
 
 # Define the scopes for Google Sheets and Drive access
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
@@ -20,7 +22,6 @@ client_secret_file = 'C:/Users/rocco.DESKTOP-E207F2C/OneDrive/Documents/projects
 # Path to the folder to monitor
 music_folder = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\output'
 archive_folder = os.path.join(music_folder, 'archive')  # Archive folder
-# Corrected RSS feed path
 rss_file_path = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation\rss.xml'
 COPY_DELAY = 10  # Adjust the delay as needed (in seconds)
 
@@ -29,12 +30,33 @@ BUCKET_NAME = 'audio-upload-queue'
 
 # Authenticate using OAuth2 flow
 
+# Function to authenticate using OAuth2 and store tokens
+
 
 def authenticate_gspread():
-    flow = InstalledAppFlow.from_client_secrets_file(
-        client_secret_file, SCOPES)
-    # This will open a browser for authentication
-    creds = flow.run_local_server(port=0)
+    creds = None
+    token_file = 'token.json'
+
+    # Check if token.json file exists and load credentials
+    if os.path.exists(token_file):
+        creds = Credentials.from_authorized_user_file(token_file, SCOPES)
+
+    # If there are no valid credentials, or the token has expired, refresh or prompt for login
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            # Refresh the token using the refresh token
+            creds.refresh(Request())
+        else:
+            # Authenticate using OAuth flow
+            flow = InstalledAppFlow.from_client_secrets_file(
+                client_secret_file, SCOPES)
+            creds = flow.run_local_server(port=0)
+
+        # Save the credentials for future use
+        with open(token_file, 'w') as token:
+            token.write(creds.to_json())
+
+    # Return the authenticated gspread client
     return gspread.authorize(creds)
 
 
@@ -53,12 +75,10 @@ sheet = spreadsheet.worksheet('rad-pod-tit-soc-db')
 
 
 def upload_to_bucket(file_path):
-    # Initialize a Google Cloud Storage client
     storage_client = storage.Client()
     bucket = storage_client.bucket(BUCKET_NAME)
     blob = bucket.blob(os.path.basename(file_path))
 
-    # Upload the file to the bucket
     print(f"Uploading {file_path} to Google Cloud bucket {BUCKET_NAME}...")
     blob.upload_from_filename(file_path)
     print(f"File {file_path} uploaded successfully to {BUCKET_NAME}.")
@@ -66,41 +86,35 @@ def upload_to_bucket(file_path):
 # Function to update the RSS feed (rss.xml)
 
 
-def update_rss_feed(file_path, title, description, length):
-    # Load the existing rss.xml file from the correct location
-    tree = ET.parse(rss_file_path)
+def update_rss_feed(episode_title, episode_description, audio_url):
+    try:
+        tree = ET.parse(rss_file_path)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"RSS feed file '{rss_file_path}' not found.")
+
     root = tree.getroot()
-
-    # Create a new item
-    item = ET.Element('item')
-
-    # Add title, description, enclosure, pubDate, and guid to the item
-    title_element = ET.SubElement(item, 'title')
-    title_element.text = title
-
-    description_element = ET.SubElement(item, 'description')
-    description_element.text = description
-
-    enclosure_element = ET.SubElement(item, 'enclosure', {
-        'url': f"http://storage.googleapis.com/{BUCKET_NAME}/{os.path.basename(file_path)}",
-        'length': str(length),
-        'type': 'audio/mpeg'
-    })
-
-    pub_date_element = ET.SubElement(item, 'pubDate')
-    pub_date_element.text = time.strftime(
-        "%a, %d %b %Y %H:%M:%S GMT", time.gmtime())
-
-    guid_element = ET.SubElement(item, 'guid')
-    guid_element.text = f"http://storage.googleapis.com/{BUCKET_NAME}/{os.path.basename(file_path)}"
-
-    # Add the new item to the channel
     channel = root.find('channel')
-    channel.append(item)
 
-    # Save the updated rss.xml file to the correct path
-    tree.write(rss_file_path)
-    print(f"RSS feed updated with {title}")
+    if channel is None:
+        raise ValueError("Invalid RSS format: 'channel' element not found.")
+
+    item = ET.SubElement(channel, 'item')
+    title = ET.SubElement(item, 'title')
+    title.text = episode_title
+    description = ET.SubElement(item, 'description')
+    description.text = episode_description
+    enclosure = ET.SubElement(
+        item, 'enclosure', url=audio_url, length="12345678", type="audio/mpeg")
+    pubDate = ET.SubElement(item, 'pubDate')
+    pubDate.text = datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S GMT')
+    guid = ET.SubElement(item, 'guid')
+    guid.text = audio_url
+
+    try:
+        tree.write(rss_file_path, encoding='utf-8', xml_declaration=True)
+        print(f"RSS feed updated with episode: {episode_title}")
+    except Exception as e:
+        print(f"Error writing to RSS feed file: {e}")
 
 # Function to commit the updated RSS feed to Git
 
@@ -119,40 +133,27 @@ def commit_to_git():
 
 
 def add_timestamp_and_archive(file_path):
-    # Define the new file path with a timestamp
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     dir_name, base_name = os.path.split(file_path)
     new_file_name = f"{base_name.split('.')[0]}_{timestamp}.mp3"
     new_file_path = os.path.join(dir_name, new_file_name)
 
-    # Delay to allow queue_stream to complete its process
     print(
         f"Delaying for {COPY_DELAY} seconds to allow queue_stream to complete.")
     time.sleep(COPY_DELAY)
 
-    # Fetch the title from cell A1 and description from cell B1
     title = sheet.acell('A1').value
     description = sheet.acell('B1').value
 
-    # Calculate the file length (size in bytes)
-    length = os.path.getsize(file_path)
-
-    # Try renaming the file and uploading it to the bucket
     try:
-        # Rename the file with a timestamp
         shutil.move(file_path, new_file_path)
         print(f"Moved file to {new_file_path}")
 
-        # Upload the renamed file to the bucket
         upload_to_bucket(new_file_path)
-
-        # Update RSS feed
-        update_rss_feed(new_file_path, title, description, length)
-
-        # Commit changes to Git
+        update_rss_feed(
+            title, description, f"http://storage.googleapis.com/{BUCKET_NAME}/{os.path.basename(new_file_path)}")
         commit_to_git()
 
-        # Move the file to the archive after uploading to the bucket
         shutil.move(new_file_path, os.path.join(
             archive_folder, os.path.basename(new_file_path)))
         print(f"Archived file to {archive_folder}")
@@ -166,8 +167,6 @@ class NewFileHandler(FileSystemEventHandler):
     def on_created(self, event):
         if event.is_directory:
             return
-
-        # Only process mp3 files that start with 'stitched_audio'
         if event.src_path.endswith(".mp3") and 'stitched_audio' in event.src_path:
             print(f"New file detected: {event.src_path}")
             add_timestamp_and_archive(event.src_path)
@@ -184,7 +183,7 @@ def monitor_output_folder():
     print(f"Monitoring {music_folder} for new files...")
     try:
         while True:
-            time.sleep(1)  # Keep the script running
+            time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
     observer.join()

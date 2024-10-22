@@ -11,6 +11,8 @@ from google.oauth2.credentials import Credentials
 from xml.etree import ElementTree as ET
 from google.auth.transport.requests import Request
 import datetime
+from xml.dom import minidom
+import xml.etree.ElementTree as ET
 
 # Define the scopes for Google Sheets and Drive access
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
@@ -110,12 +112,15 @@ def update_rss_feed(episode_title, episode_description, audio_url):
     guid = ET.SubElement(item, 'guid')
     guid.text = audio_url
 
+    # Write the updated XML back to the file with pretty print
     try:
-        tree.write(rss_file_path, encoding='utf-8', xml_declaration=True)
+        rough_string = ET.tostring(root, 'utf-8')
+        reparsed = minidom.parseString(rough_string)
+        with open(rss_file_path, 'w', encoding='utf-8') as f:
+            f.write(reparsed.toprettyxml(indent="    "))
         print(f"RSS feed updated with episode: {episode_title}")
     except Exception as e:
         print(f"Error writing to RSS feed file: {e}")
-
 # Function to commit the updated RSS feed to Git
 
 

@@ -12,7 +12,7 @@ from xml.etree import ElementTree as ET
 from google.auth.transport.requests import Request
 import datetime
 from xml.dom import minidom
-import xml.etree.ElementTree as ET
+import telnetlib
 
 # Define the scopes for Google Sheets and Drive access
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
@@ -25,14 +25,12 @@ client_secret_file = 'C:/Users/rocco.DESKTOP-E207F2C/OneDrive/Documents/projects
 music_folder = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\output'
 archive_folder = os.path.join(music_folder, 'archive')  # Archive folder
 rss_file_path = r'C:\Users\rocco.DESKTOP-E207F2C\OneDrive\Documents\projects\radioai\podcast-automation\rss.xml'
-COPY_DELAY = 10  # Adjust the delay as needed (in seconds)
+COPY_DELAY = 1  # Adjust the delay as needed (in seconds)
 
 # Google Cloud Bucket details
 BUCKET_NAME = 'audio-upload-queue'
 
 # Authenticate using OAuth2 flow
-
-# Function to authenticate using OAuth2 and store tokens
 
 
 def authenticate_gspread():
@@ -46,10 +44,8 @@ def authenticate_gspread():
     # If there are no valid credentials, or the token has expired, refresh or prompt for login
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            # Refresh the token using the refresh token
             creds.refresh(Request())
         else:
-            # Authenticate using OAuth flow
             flow = InstalledAppFlow.from_client_secrets_file(
                 client_secret_file, SCOPES)
             creds = flow.run_local_server(port=0)
@@ -66,11 +62,10 @@ def authenticate_gspread():
 client = authenticate_gspread()
 
 # Use the spreadsheet key from the URL
-spreadsheet_key = '1_ecgQw3FI7NoMQwIlaG4OCgbb4zxw4RrHMUeF7FiNho'
+spreadsheet_key = '1p2pRyckjg0kgzwDjxV7fPOhNQh2YvxFSjRpeDJVXWpA'
 
 # Open the spreadsheet by key and access the correct sheet by name
 spreadsheet = client.open_by_key(spreadsheet_key)
-# Access the "rad-pod-tit-soc-db" sheet
 sheet = spreadsheet.worksheet('rad-pod-tit-soc-db')
 
 # Function to upload file to Google Cloud Storage bucket
@@ -121,6 +116,7 @@ def update_rss_feed(episode_title, episode_description, audio_url):
         print(f"RSS feed updated with episode: {episode_title}")
     except Exception as e:
         print(f"Error writing to RSS feed file: {e}")
+
 # Function to commit the updated RSS feed to Git
 
 
@@ -134,36 +130,72 @@ def commit_to_git():
     except subprocess.CalledProcessError as e:
         print(f"Error committing changes to Git: {e}")
 
-# Function to add a timestamp, upload to bucket, update RSS feed, and archive the file
+# Function to add track to Liquidsoap queue
+
+
+def add_track_to_queue(unix_style_path):
+    HOST = "127.0.0.1"  # Telnet server address
+    PORT = 1234         # Port defined in Liquidsoap script
+    # PASSWORD = "your_secure_password"  # Uncomment if you set a password in Liquidsoap
+    try:
+        tn = telnetlib.Telnet(HOST, PORT)
+        # Uncomment the following lines if you set a password
+        # tn.read_until(b"Password: ")
+        # tn.write((PASSWORD + "\n").encode('utf-8'))
+        command = f'radio_queue.push {unix_style_path}\n'
+        tn.write(command.encode('utf-8'))
+        tn.close()
+        print(f"Added {unix_style_path} to Liquidsoap queue")
+    except Exception as e:
+        print(f"Error adding track to Liquidsoap queue: {e}")
+
+# Function to move file to archive with timestamp and process further
 
 
 def add_timestamp_and_archive(file_path):
+    # Add timestamp to the filename immediately to prevent overwriting
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     dir_name, base_name = os.path.split(file_path)
     new_file_name = f"{base_name.split('.')[0]}_{timestamp}.mp3"
-    new_file_path = os.path.join(dir_name, new_file_name)
+    new_file_path = os.path.join(archive_folder, new_file_name)
 
-    print(
-        f"Delaying for {COPY_DELAY} seconds to allow queue_stream to complete.")
-    time.sleep(COPY_DELAY)
+    # Immediately move the file to the archive folder with the new name
+    move_successful = False
+    while not move_successful:
+        try:
+            shutil.move(file_path, new_file_path)
+            print(f"Moved file to {new_file_path}")
+            move_successful = True
+        except Exception as e:
+            print(f"File is still in use, retrying... Error: {e}")
+            time.sleep(1)
 
-    title = sheet.acell('A1').value
-    description = sheet.acell('B1').value
+    # Convert the Windows path to Unix-style for Liquidsoap
+    unix_style_path = new_file_path.replace("\\", "/").replace("C:", "/mnt/c")
 
+    # Add the track to the Liquidsoap queue
+    add_track_to_queue(unix_style_path)
+
+    # Proceed to upload the file to the bucket and perform other actions
     try:
-        shutil.move(file_path, new_file_path)
-        print(f"Moved file to {new_file_path}")
-
+        # Upload file to Google Cloud bucket
         upload_to_bucket(new_file_path)
+
+        # Get metadata information from Google Sheet
+        title = sheet.acell('A1').value
+        description = sheet.acell('B1').value
+
+        # Update RSS feed
         update_rss_feed(
             title, description, f"http://storage.googleapis.com/{BUCKET_NAME}/{os.path.basename(new_file_path)}")
+
+        # Commit changes to Git
         commit_to_git()
 
-        shutil.move(new_file_path, os.path.join(
-            archive_folder, os.path.basename(new_file_path)))
-        print(f"Archived file to {archive_folder}")
+        print(f"Archive processing complete for {new_file_path}")
+
     except Exception as e:
-        print(f"Error moving, uploading, or archiving file: {e}")
+        print(f"Error uploading or processing file: {e}")
 
 # Event handler for new files in the directory
 

@@ -136,18 +136,15 @@ def commit_to_git():
 def add_track_to_queue(unix_style_path):
     HOST = "127.0.0.1"  # Telnet server address
     PORT = 1234         # Port defined in Liquidsoap script
-    # PASSWORD = "your_secure_password"  # Uncomment if you set a password in Liquidsoap
     try:
         tn = telnetlib.Telnet(HOST, PORT)
-        # Uncomment the following lines if you set a password
-        # tn.read_until(b"Password: ")
-        # tn.write((PASSWORD + "\n").encode('utf-8'))
         command = f'radio_queue.push {unix_style_path}\n'
         tn.write(command.encode('utf-8'))
         tn.close()
         print(f"Added {unix_style_path} to Liquidsoap queue")
     except Exception as e:
         print(f"Error adding track to Liquidsoap queue: {e}")
+
 
 # Function to move file to archive with timestamp and process further
 

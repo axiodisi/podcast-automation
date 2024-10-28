@@ -28,24 +28,10 @@ def is_done_file_present(folder_id):
         query = f"'{folder_id}' in parents and name = 'done' and trashed = false"
         results = drive_service.files().list(q=query).execute()
         files = results.get('files', [])
-        # Debugging line
         print(f"Files in folder: {[file['name'] for file in files]}")
         return len(files) > 0
     except Exception as e:
         print(f"Error checking for 'done' file: {e}")
-        return False
-
-# Function to check if there is new data in Google Sheet
-
-
-def has_new_data():
-    try:
-        data = sheet.get_all_values()
-        print(f"Sheet data: {data}")  # Debugging line
-        # Checks if there is content below A1:C1
-        return len(data) > 1 and any(data[1])
-    except Exception as e:
-        print(f"Error reading Google Sheet: {e}")
         return False
 
 # Function to manually trigger a process (Make.com scenario)
@@ -54,7 +40,6 @@ def has_new_data():
 def trigger_make_scenario(row_data, row_index):
     try:
         url = "https://hook.us2.make.com/q65bb1myb56hxep1dpbq3we96tbdtfu6"
-        # Add row number, and values from columns A and B to the payload
         payload = {
             "row_number": row_index,
             "column_a": row_data[0] if len(row_data) > 0 else "",
@@ -64,7 +49,6 @@ def trigger_make_scenario(row_data, row_index):
         json_payload = json.dumps(payload)
         response = requests.post(url, data=json_payload, headers={
                                  'Content-Type': 'application/json'}, timeout=10)
-        # Debugging line
         print(
             f"Make.com scenario response: {response.status_code}, {response.text}")
         return response.status_code == 200
@@ -75,38 +59,34 @@ def trigger_make_scenario(row_data, row_index):
 
 # Main Loop
 folder_id = "1AUhNcZtlc0R5WUAaOfZkU21_TV9NcbeP"
-done_file_present = False
 
 while True:
     try:
         print("Checking for 'done' file in Google Drive...")
-        if is_done_file_present(folder_id):
-            if not done_file_present:
-                print("Done file detected, waiting for it to be deleted...")
-                done_file_present = True
-        else:
-            if done_file_present:
-                print("Done file deleted, ready for new processing.")
-                data = sheet.get_all_values()
-                if len(data) > 1:
-                    for i, row in enumerate(data[1:], start=2):  # Skip header row
-                        if any(row):
+        if not is_done_file_present(folder_id):
+            print("No 'done' file found, ready for new processing.")
+            data = sheet.get_all_values()
+            if len(data) > 1:
+                for i, row in enumerate(data[1:], start=2):  # Skip header row
+                    if any(row):
+                        print(
+                            f"New data found in row {i}, triggering Make.com scenario...")
+                        success = trigger_make_scenario(
+                            row, i)  # Pass row index as well
+                        if success:
                             print(
-                                f"New data found in row {i}, triggering Make.com scenario...")
-                            success = trigger_make_scenario(
-                                row, i)  # Pass row index as well
-                            if success:
-                                print(
-                                    f"Make.com scenario triggered successfully for row {i}.")
-                            else:
-                                print(
-                                    f"Failed to trigger Make.com scenario for row {i}.")
-                    # Clear the content of the sheet after processing all rows
-                    sheet.clear()
-                    print("Sheet content cleared after processing.")
-                else:
-                    print("No new data found in Google Sheet.")
-                done_file_present = False
+                                f"Make.com scenario triggered successfully for row {i}.")
+                        else:
+                            print(
+                                f"Failed to trigger Make.com scenario for row {i}.")
+                # Clear the content of the sheet after processing all rows
+                sheet.clear()
+                print("Sheet content cleared after processing.")
+            else:
+                print("No new data found in Google Sheet.")
+        else:
+            print("'done' file found, waiting for it to be deleted...")
+
     except Exception as e:
         print(f"Error in main loop: {e}")
 

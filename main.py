@@ -13,7 +13,8 @@ from google.auth.transport.requests import Request
 import datetime
 from xml.dom import minidom
 import telnetlib
-
+import json
+import re
 # Define the scopes for Google Sheets and Drive access
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
           'https://www.googleapis.com/auth/drive']
@@ -30,18 +31,14 @@ COPY_DELAY = 1  # Adjust the delay as needed (in seconds)
 # Google Cloud Bucket details
 BUCKET_NAME = 'audio-upload-queue'
 
-# Authenticate using OAuth2 flow
-
 
 def authenticate_gspread():
     creds = None
     token_file = 'token.json'
 
-    # Check if token.json file exists and load credentials
     if os.path.exists(token_file):
         creds = Credentials.from_authorized_user_file(token_file, SCOPES)
 
-    # If there are no valid credentials, or the token has expired, refresh or prompt for login
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -50,25 +47,17 @@ def authenticate_gspread():
                 client_secret_file, SCOPES)
             creds = flow.run_local_server(port=0)
 
-        # Save the credentials for future use
         with open(token_file, 'w') as token:
             token.write(creds.to_json())
 
-    # Return the authenticated gspread client
     return gspread.authorize(creds)
 
 
 # Set up gspread authentication
 client = authenticate_gspread()
-
-# Use the spreadsheet key from the URL
 spreadsheet_key = '1p2pRyckjg0kgzwDjxV7fPOhNQh2YvxFSjRpeDJVXWpA'
-
-# Open the spreadsheet by key and access the correct sheet by name
 spreadsheet = client.open_by_key(spreadsheet_key)
 sheet = spreadsheet.worksheet('rad-pod-tit-soc-db')
-
-# Function to upload file to Google Cloud Storage bucket
 
 
 def upload_to_bucket(file_path):
@@ -79,8 +68,6 @@ def upload_to_bucket(file_path):
     print(f"Uploading {file_path} to Google Cloud bucket {BUCKET_NAME}...")
     blob.upload_from_filename(file_path)
     print(f"File {file_path} uploaded successfully to {BUCKET_NAME}.")
-
-# Function to update the RSS feed (rss.xml)
 
 
 def update_rss_feed(episode_title, episode_description, audio_url):
@@ -107,7 +94,6 @@ def update_rss_feed(episode_title, episode_description, audio_url):
     guid = ET.SubElement(item, 'guid')
     guid.text = audio_url
 
-    # Write the updated XML back to the file with pretty print
     try:
         rough_string = ET.tostring(root, 'utf-8')
         reparsed = minidom.parseString(rough_string)
@@ -116,8 +102,6 @@ def update_rss_feed(episode_title, episode_description, audio_url):
         print(f"RSS feed updated with episode: {episode_title}")
     except Exception as e:
         print(f"Error writing to RSS feed file: {e}")
-
-# Function to commit the updated RSS feed to Git
 
 
 def commit_to_git():
@@ -130,82 +114,80 @@ def commit_to_git():
     except subprocess.CalledProcessError as e:
         print(f"Error committing changes to Git: {e}")
 
-# Function to add track to Liquidsoap queue
-
 
 def add_track_to_queue(unix_style_path):
-    HOST = "127.0.0.1"  # Telnet server address
-    PORT = 1234         # Port defined in Liquidsoap script
-    try:
-        tn = telnetlib.Telnet(HOST, PORT)
-        command = f'radio_queue.push {unix_style_path}\n'
-        tn.write(command.encode('utf-8'))
-        tn.close()
-        print(f"Added {unix_style_path} to Liquidsoap queue")
-    except Exception as e:
-        print(f"Error adding track to Liquidsoap queue: {e}")
+    HOST = "127.0.0.1"
+    PORT = 1234
+    MAX_RETRIES = 3
 
-
-# Function to move file to archive with timestamp and process further
-
-
-def add_timestamp_and_archive(file_path):
-    # Add timestamp to the filename immediately to prevent overwriting
-    timestamp = time.strftime("%Y%m%d_%H%M%S")
-    dir_name, base_name = os.path.split(file_path)
-    new_file_name = f"{base_name.split('.')[0]}_{timestamp}.mp3"
-    new_file_path = os.path.join(archive_folder, new_file_name)
-
-    # Immediately move the file to the archive folder with the new name
-    move_successful = False
-    while not move_successful:
+    for attempt in range(MAX_RETRIES):
+        tn = None
         try:
-            shutil.move(file_path, new_file_path)
-            print(f"Moved file to {new_file_path}")
-            move_successful = True
+            print(f"\nAttempt {attempt + 1} to queue track...")
+            tn = telnetlib.Telnet(HOST, PORT, timeout=5)
+
+            # First check queue status
+            tn.write(b'radio_queue.length\n')
+            queue_length = tn.read_until(b"END", timeout=5).decode('utf-8')
+            print(f"Current queue length: {queue_length}")
+
+            # Send the push command
+            command = f'radio_queue.push {unix_style_path}\n'
+            print(f"Sending command: {command.strip()}")
+            tn.write(command.encode('utf-8'))
+
+            # Wait for proper confirmation
+            response = tn.read_until(b"END", timeout=5).decode('utf-8')
+            print(f"Initial response: {response}")
+
+            # Verify the track was actually queued
+            tn.write(b'radio_queue.length\n')
+            new_length = tn.read_until(b"END", timeout=5).decode('utf-8')
+            print(f"New queue length: {new_length}")
+
+            if "error" in response.lower():
+                raise Exception(f"Liquidsoap reported error: {response}")
+
+            print(f"Successfully queued: {unix_style_path}")
+            return True
+
         except Exception as e:
-            print(f"File is still in use, retrying... Error: {e}")
-            time.sleep(1)
+            print(f"Queue attempt {attempt + 1} failed: {str(e)}")
+            if attempt == MAX_RETRIES - 1:
+                print(f"Failed to queue track after {MAX_RETRIES} attempts")
+                return False
+            time.sleep(2)  # Wait before retry
 
-    # Convert the Windows path to Unix-style for Liquidsoap
-    unix_style_path = new_file_path.replace("\\", "/").replace("C:", "/mnt/c")
-
-    # Add the track to the Liquidsoap queue
-    add_track_to_queue(unix_style_path)
-
-    # Proceed to upload the file to the bucket and perform other actions
-    try:
-        # Upload file to Google Cloud bucket
-        upload_to_bucket(new_file_path)
-
-        # Get metadata information from Google Sheet
-        title = sheet.acell('A1').value
-        description = sheet.acell('B1').value
-
-        # Update RSS feed
-        update_rss_feed(
-            title, description, f"http://storage.googleapis.com/{BUCKET_NAME}/{os.path.basename(new_file_path)}")
-
-        # Commit changes to Git
-        commit_to_git()
-
-        print(f"Archive processing complete for {new_file_path}")
-
-    except Exception as e:
-        print(f"Error uploading or processing file: {e}")
-
-# Event handler for new files in the directory
+        finally:
+            if tn:
+                try:
+                    tn.close()
+                except:
+                    pass
 
 
 class NewFileHandler(FileSystemEventHandler):
+    def __init__(self):
+        self.processing = False
+
     def on_created(self, event):
+        if self.processing:
+            print("Already processing a file, skipping...")
+            return
+
         if event.is_directory:
             return
-        if event.src_path.endswith(".mp3") and 'stitched_audio' in event.src_path:
-            print(f"New file detected: {event.src_path}")
-            add_timestamp_and_archive(event.src_path)
 
-# Function to monitor the folder for new files
+        # Update this check since filename will now be like 'stitched_audio_20241031_123456.mp3'
+        if event.src_path.endswith(".mp3") and 'stitched_audio_' in event.src_path:
+            try:
+                self.processing = True
+                print(f"\nNew file detected: {event.src_path}")
+                time.sleep(COPY_DELAY)
+                # Instead of adding timestamp (since it's already there), just process the file
+                process_audio_file(event.src_path)
+            finally:
+                self.processing = False
 
 
 def monitor_output_folder():
@@ -221,6 +203,84 @@ def monitor_output_folder():
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
+
+
+def process_audio_file(file_path):
+    try:
+        print(f"\nProcessing file: {file_path}")
+
+        # Extract timestamp from filename
+        base_name = os.path.basename(file_path)
+        # === ADD THIS NEW SECTION HERE ===
+        processed_urls_path = 'C:/Users/rocco.DESKTOP-E207F2C/OneDrive/Documents/projects/radioai/XFeedData/pup/processed_urls.json'
+        track_urls_path = 'C:/Users/rocco.DESKTOP-E207F2C/OneDrive/Documents/projects/radioai/XFeedData/pup/track_urls.json'
+
+        # Get most recent URL from processed_urls.json
+        with open(processed_urls_path, 'r') as f:
+            processed_urls = json.load(f)
+            latest_url = processed_urls[-1] if processed_urls else None
+
+        if latest_url:
+            # Map it to this audio file in track_urls.json
+            try:
+                with open(track_urls_path, 'r') as f:
+                    track_urls = json.load(f)
+            except (FileNotFoundError, json.JSONDecodeError):
+                track_urls = {}
+
+            track_urls[base_name] = latest_url
+            with open(track_urls_path, 'w') as f:
+                json.dump(track_urls, f, indent=2)
+            print(f"Mapped {base_name} to {latest_url}")
+            # === END NEW SECTION ===
+
+        match = re.search(r'\d{8}_\d{6}', base_name)
+        if match:
+            timestamp = match.group(0)
+            print(f"Extracted timestamp: {timestamp}")
+        else:
+            print("No timestamp found in filename")
+            return None
+
+        # Move to archive folder
+        new_file_path = os.path.join(archive_folder, base_name)
+
+        os.makedirs(archive_folder, exist_ok=True)
+
+        # Move file to archive
+        shutil.copy2(file_path, new_file_path)
+        os.remove(file_path)
+        print(f"Moved file to archive: {new_file_path}")
+
+        # Convert path for Liquidsoap
+        unix_style_path = new_file_path.replace(
+            "\\", "/").replace("C:", "/mnt/c")
+
+        # Save mapping with existing timestamp
+        print(f"Saved file mapping with timestamp: {timestamp}")
+
+        # Add to Liquidsoap queue
+        add_track_to_queue(unix_style_path)
+
+        try:
+            # Process for RSS and cloud storage
+            upload_to_bucket(new_file_path)
+            title = sheet.acell('A1').value or "Untitled Episode"
+            description = sheet.acell('B1').value or "No description available"
+            audio_url = f"http://storage.googleapis.com/{BUCKET_NAME}/{os.path.basename(new_file_path)}"
+            print(f"Updated URL mapping for timestamp: {timestamp}")
+            update_rss_feed(title, description, audio_url)
+            commit_to_git()
+            print(f"Completed processing for {base_name}")
+            return new_file_path
+
+        except Exception as e:
+            print(f"Error in processing phase: {str(e)}")
+            return None
+
+    except Exception as e:
+        print(f"Critical error: {str(e)}")
+        return None
 
 
 if __name__ == "__main__":
